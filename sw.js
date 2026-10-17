@@ -16,7 +16,7 @@
 // ?t= URLs. inject-precache.mjs replaces the version in dist/sw.js, and only
 // that build intercepts requests.
 
-const CACHE_VERSION = "08847f4436";
+const CACHE_VERSION = "ea6860a27d";
 const SHELL_CACHE = `kindred-stars-shell-${CACHE_VERSION}`;
 const ASSET_CACHE = `kindred-stars-assets-${CACHE_VERSION}`;
 
@@ -25,14 +25,14 @@ const PRECACHE_URLS = [
   "./index.html",
   "./assets/CanvasPool-uF6WpVll.js",
   "./assets/RenderTargetSystem-DK2LvnjB.js",
-  "./assets/browserAll-DFwgX9Jz.js",
+  "./assets/browserAll-B3qEy0bF.js",
   "./assets/canvasUtils-CHsGmysk.js",
   "./assets/getTexelRangeRects-BAAg447t.js",
   "./assets/getTextureBatchBindGroup-BiqjK5Li.js",
-  "./assets/index-DCHIQYH4.js",
-  "./assets/index-DQt66r66.css",
-  "./assets/init-_6ku0NDm.js",
-  "./assets/webworkerAll-DFUDrzZp.js",
+  "./assets/index-D06KFxHB.js",
+  "./assets/index-Diwr_LJc.css",
+  "./assets/init-UrN50oYd.js",
+  "./assets/webworkerAll-DSsRM-3F.js",
   "./icons/apple-touch-icon.png",
   "./icons/favicon-16.png",
   "./icons/favicon-32.png",
