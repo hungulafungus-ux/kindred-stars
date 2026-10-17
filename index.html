@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kindred">
+    <meta name="theme-color" content="#0B1020">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="./icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="./icons/favicon-16.png" type="image/png" sizes="16x16">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-se-750x1334.png" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-13-mini-1125x2436.png" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-13-14-1170x2532.png" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-13-pro-max-14-plus-1284x2778.png" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-14-pro-15-16-1179x2556.png" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-14-pro-max-16-plus-1290x2796.png" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-16-pro-1206x2622.png" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="./splash/iphone-16-pro-max-1320x2868.png" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <meta name="color-scheme" content="dark" />
+    <title>Kindred Stars</title>
+    <script type="module" crossorigin src="./assets/index-DCHIQYH4.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/CanvasPool-uF6WpVll.js">
+    <link rel="modulepreload" crossorigin href="./assets/canvasUtils-CHsGmysk.js">
+    <link rel="modulepreload" crossorigin href="./assets/RenderTargetSystem-DK2LvnjB.js">
+    <link rel="modulepreload" crossorigin href="./assets/getTextureBatchBindGroup-BiqjK5Li.js">
+    <link rel="modulepreload" crossorigin href="./assets/getTexelRangeRects-BAAg447t.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-DQt66r66.css">
+  </head>
+  <body>
+    <h1 class="sr-only">Kindred Stars</h1>
+    <canvas id="sky" aria-label="Night sky of word stars"></canvas>
+    <div id="safe-probe" aria-hidden="true"></div>
+    <header class="hud" id="hud">
+      <div class="hud-row">
+        <span class="hud-level" id="hud-level">Level 1</span>
+        <span class="hud-found" id="hud-found">families found 0/0</span>
+        <button class="hud-pause" id="hud-pause" type="button" aria-label="Pause"><span></span></button>
+      </div>
+      <div class="hud-row">
+        <div class="hud-sparks" id="hud-sparks" role="img" aria-label="sparks"></div>
+      </div>
+      <div class="hud-revealed" id="hud-revealed" aria-live="polite"></div>
+    </header>
+    <div class="praise" id="praise" aria-live="polite"></div>
+    <nav class="helpers" id="helpers" aria-label="Helpers">
+      <button type="button" data-helper="telescope">Telescope <span class="count">0</span></button>
+      <button type="button" data-helper="comet">Comet <span class="count">0</span></button>
+      <button type="button" data-helper="kindling">Kindling <span class="count">0</span></button>
+    </nav>
+    <section class="screen" id="screen-win" hidden>
+      <h2>The sky is complete</h2>
+      <p id="win-sparks"></p>
+      <p id="win-earned"></p>
+      <button type="button" id="win-next">Next level</button>
+    </section>
+    <section class="screen" id="screen-lost" hidden>
+      <h2>Out of sparks</h2>
+      <p>No penalty. This sky will wait for you.</p>
+      <button type="button" id="lost-retry">Try again</button>
+    </section>
+    <section class="screen" id="screen-pause" hidden>
+      <h2>Paused</h2>
+      <button type="button" id="pause-resume">Resume</button>
+      <button type="button" class="quiet" id="pause-restart">Start this sky again</button>
+      <button type="button" class="quiet" id="pause-sound">Sound: on</button>
+    </section>
+    <div class="turn-upright">Turn your phone upright to play.</div>
+    <p id="boot-error" hidden>The night sky could not start.</p>
+    <script>
+      // Offline worker. A waiting update is adopted only when this page opens and
+      // no level is on screen. The worker itself never reloads the page.
+      (function () {
+        if (!("serviceWorker" in navigator)) return;
+
+        var reloading = false;
+
+        function levelActive() {
+          try {
+            return sessionStorage.getItem("ks-level-active") === "1";
+          } catch (error) {
+            return false;
+          }
+        }
+
+        function reloadOnce() {
+          if (reloading || levelActive()) return;
+          try {
+            if (sessionStorage.getItem("ks-sw-reloaded") === "1") return;
+            sessionStorage.setItem("ks-sw-reloaded", "1");
+          } catch (error) {
+            return;
+          }
+          reloading = true;
+          window.location.reload();
+        }
+
+        // Vite injects this script only on the dev server. public/sw.js is the
+        // unversioned "dev" worker there, and registering it caches source modules.
+        function viteDevServer() {
+          if (typeof document === "undefined" || !document.getElementsByTagName) return false;
+          var scripts = document.getElementsByTagName("script");
+          for (var i = 0; i < scripts.length; i++) {
+            var src = scripts[i].getAttribute("src") || "";
+            if (src.indexOf("/@vite/client") !== -1) return true;
+          }
+          return false;
+        }
+
+        function leaveDevServer() {
+          var pending;
+          try {
+            pending = navigator.serviceWorker.getRegistrations();
+          } catch (error) {
+            return;
+          }
+          if (!pending || !pending.then) return;
+          var controlled = !!navigator.serviceWorker.controller;
+          pending.then(function (registrations) {
+            var dropping = [];
+            for (var i = 0; i < registrations.length; i++) dropping.push(registrations[i].unregister());
+            Promise.all(dropping).then(function () {
+              if (!controlled && registrations.length === 0) return;
+              try {
+                if (sessionStorage.getItem("ks-sw-dev-cleared") === "1") return;
+                sessionStorage.setItem("ks-sw-dev-cleared", "1");
+              } catch (error) {
+                return;
+              }
+              window.location.reload();
+            });
+          });
+        }
+
+        window.addEventListener("load", function () {
+          if (viteDevServer()) {
+            leaveDevServer();
+            return;
+          }
+
+          if (navigator.serviceWorker.controller) {
+            try {
+              sessionStorage.removeItem("ks-sw-reloaded");
+            } catch (error) {
+              // Session storage can be blocked. The worker still registers.
+            }
+          }
+
+          navigator.serviceWorker
+            .register("./sw.js", { scope: "./" })
+            .then(function (registration) {
+              var pending = registration.waiting;
+              if (pending && navigator.serviceWorker.controller && !levelActive()) {
+                navigator.serviceWorker.addEventListener("controllerchange", function () {
+                  reloadOnce();
+                });
+                pending.postMessage({ type: "SKIP_WAITING" });
+                return;
+              }
+
+              function watch(worker) {
+                if (!worker) return;
+                if (worker.state === "activated") reloadOnce();
+                worker.addEventListener("statechange", function () {
+                  if (worker.state === "activated") reloadOnce();
+                });
+              }
+
+              if (!navigator.serviceWorker.controller) {
+                watch(registration.installing);
+                watch(registration.waiting);
+                if (registration.active) reloadOnce();
+              }
+            })
+            .catch(function (error) {
+              console.warn("Kindred Stars service worker was not registered.", error);
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>
