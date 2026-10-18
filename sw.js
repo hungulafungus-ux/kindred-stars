@@ -16,7 +16,7 @@
 // ?t= URLs. inject-precache.mjs replaces the version in dist/sw.js, and only
 // that build intercepts requests.
 
-const CACHE_VERSION = "ea6860a27d";
+const CACHE_VERSION = "70e2c63ec2";
 const SHELL_CACHE = `kindred-stars-shell-${CACHE_VERSION}`;
 const ASSET_CACHE = `kindred-stars-assets-${CACHE_VERSION}`;
 
@@ -25,14 +25,14 @@ const PRECACHE_URLS = [
   "./index.html",
   "./assets/CanvasPool-uF6WpVll.js",
   "./assets/RenderTargetSystem-DK2LvnjB.js",
-  "./assets/browserAll-B3qEy0bF.js",
+  "./assets/browserAll-C6n70We-.js",
   "./assets/canvasUtils-CHsGmysk.js",
   "./assets/getTexelRangeRects-BAAg447t.js",
   "./assets/getTextureBatchBindGroup-BiqjK5Li.js",
-  "./assets/index-D06KFxHB.js",
-  "./assets/index-Diwr_LJc.css",
-  "./assets/init-UrN50oYd.js",
-  "./assets/webworkerAll-DSsRM-3F.js",
+  "./assets/index-BAiSup5M.css",
+  "./assets/index-F0cGJfhO.js",
+  "./assets/init-B76XrYCH.js",
+  "./assets/webworkerAll-DFmgDZUl.js",
   "./icons/apple-touch-icon.png",
   "./icons/favicon-16.png",
   "./icons/favicon-32.png",
@@ -48,7 +48,19 @@ const PRECACHE_URLS = [
   "./splash/iphone-14-pro-max-16-plus-1290x2796.png",
   "./splash/iphone-16-pro-1206x2622.png",
   "./splash/iphone-16-pro-max-1320x2868.png",
-  "./splash/iphone-se-750x1334.png"
+  "./splash/iphone-se-750x1334.png",
+  "./voice/brilliant.m4a",
+  "./voice/cosmic.m4a",
+  "./voice/dazzling.m4a",
+  "./voice/luminous.m4a",
+  "./voice/out-of-this-world.m4a",
+  "./voice/over-the-moon.m4a",
+  "./voice/radiant.m4a",
+  "./voice/shining-bright.m4a",
+  "./voice/starstruck.m4a",
+  "./voice/stellar.m4a",
+  "./voice/supernova.m4a",
+  "./voice/written-in-the-stars.m4a"
 ];
 
 self.addEventListener("install", (event) => {
