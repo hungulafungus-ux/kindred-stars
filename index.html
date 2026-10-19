@@ -25,13 +25,22 @@
     <link rel="apple-touch-startup-image" href="./splash/iphone-16-pro-max-1320x2868.png" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
     <meta name="color-scheme" content="dark" />
     <title>Kindred Stars</title>
-    <script type="module" crossorigin src="./assets/index-DuBuXPNF.js"></script>
+    <script>
+      try {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("reduce-motion");
+        }
+      } catch (error) {
+        // matchMedia can throw in a locked-down webview. The game still starts.
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index-o9HwLPVi.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/CanvasPool-uF6WpVll.js">
     <link rel="modulepreload" crossorigin href="./assets/canvasUtils-CHsGmysk.js">
     <link rel="modulepreload" crossorigin href="./assets/RenderTargetSystem-DK2LvnjB.js">
     <link rel="modulepreload" crossorigin href="./assets/getTextureBatchBindGroup-BiqjK5Li.js">
     <link rel="modulepreload" crossorigin href="./assets/getTexelRangeRects-BAAg447t.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-BAiSup5M.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-CMHKmpNE.css">
   </head>
   <body>
     <h1 class="sr-only">Kindred Stars</h1>
@@ -46,9 +55,11 @@
       <div class="hud-row">
         <div class="hud-sparks" id="hud-sparks" role="img" aria-label="sparks"></div>
       </div>
+      <p class="hud-teach" id="hud-teach" hidden></p>
+      <p class="hud-embers" id="hud-embers" hidden></p>
       <div class="hud-revealed" id="hud-revealed" aria-live="polite"></div>
     </header>
-    <div class="praise" id="praise" aria-live="polite"></div>
+    <div class="praise sr-only" id="praise" aria-live="polite"></div>
     <nav class="helpers" id="helpers" aria-label="Helpers">
       <button type="button" data-helper="telescope">
         <span class="helper-face">
@@ -64,6 +75,7 @@
           <span class="count">0</span>
         </span>
         <span class="helper-name">Telescope</span>
+        <span class="helper-caption">Names one family</span>
       </button>
       <button type="button" data-helper="comet">
         <span class="helper-face">
@@ -83,6 +95,7 @@
           <span class="count">0</span>
         </span>
         <span class="helper-name">Comet</span>
+        <span class="helper-caption">Joins one true pair</span>
       </button>
       <button type="button" data-helper="kindling">
         <span class="helper-face">
@@ -100,25 +113,59 @@
           <span class="count">0</span>
         </span>
         <span class="helper-name">Kindling</span>
+        <span class="helper-caption">Gives two sparks</span>
       </button>
     </nav>
     <section class="screen" id="screen-win" hidden>
-      <h2>The sky is complete</h2>
-      <p id="win-sparks"></p>
-      <p id="win-earned"></p>
-      <button type="button" id="win-next">Next level</button>
+      <div class="screen-card">
+        <h2 id="win-heading">Bright and clear</h2>
+        <div class="win-stars" id="win-stars"></div>
+        <p id="win-sparks"></p>
+        <p id="win-earned"></p>
+        <div id="win-install" hidden>
+          <p id="win-install-text"></p>
+          <button type="button" class="quiet" id="win-install-close">Close</button>
+        </div>
+        <button type="button" id="win-next">Next level</button>
+        <button type="button" class="quiet" id="win-skies">All skies</button>
+      </div>
     </section>
     <section class="screen" id="screen-lost" hidden>
-      <h2>Out of sparks</h2>
-      <p>No penalty. This sky will wait for you.</p>
-      <button type="button" id="lost-retry">Try again</button>
+      <div class="screen-card">
+        <h2>Out of sparks</h2>
+        <p>No penalty. This sky will wait for you.</p>
+        <button type="button" id="lost-retry">Try again</button>
+      </div>
     </section>
     <section class="screen" id="screen-pause" hidden>
-      <h2>Paused</h2>
-      <button type="button" id="pause-resume">Resume</button>
-      <button type="button" class="quiet" id="pause-restart">Start this sky again</button>
-      <button type="button" class="quiet" id="pause-sound">Sound: on</button>
-      <button type="button" class="quiet" id="pause-motion">Motion: on</button>
+      <div class="screen-card scrollable">
+        <h2>Paused</h2>
+        <div id="pause-play">
+          <button type="button" id="pause-resume">Resume</button>
+          <button type="button" class="quiet" id="pause-restart">Start this sky again</button>
+          <button type="button" class="quiet" id="pause-skies">All skies</button>
+        </div>
+        <div id="pause-confirm" hidden>
+          <p id="restart-question">Start this sky again? The links on this sky go away.</p>
+          <button type="button" id="restart-yes">Start again</button>
+          <button type="button" class="quiet" id="restart-no">Keep playing</button>
+        </div>
+        <h3>How this sky works</h3>
+        <p>Drag a star onto the one that belongs with it, or tap one, then another. A wrong pair spends a spark.</p>
+        <p>The sky stays quiet until you touch it.</p>
+        <p>Telescope. Names one family.</p>
+        <p>Comet. Joins one true pair.</p>
+        <p>Kindling. Gives two sparks.</p>
+        <button type="button" class="quiet" id="pause-sound">Sound: on</button>
+        <button type="button" class="quiet" id="pause-motion">Motion: on</button>
+      </div>
+    </section>
+    <section class="screen" id="screen-skies" hidden>
+      <div class="screen-card">
+        <h2>All skies</h2>
+        <div class="sky-list scrollable" id="sky-list"></div>
+        <button type="button" class="quiet" id="skies-back">Back</button>
+      </div>
     </section>
     <div class="turn-upright">Turn your phone upright to play.</div>
     <p id="boot-error" hidden>The night sky could not start.</p>
